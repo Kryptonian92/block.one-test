@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
+
 import EOSJS from 'eosjs';
 
 export default class Block extends Component {
@@ -8,54 +10,75 @@ export default class Block extends Component {
           error: null,
           isLoaded: false,
           items: [],
+          newItems: [],
+          numList: [],
+          tempVar: "",
           toggle: false,
           on: false,
         }
         this.initialState = this.state;
       }
 
-    //   state = {
-    //     on: false,
-    // }
       componentDidMount() {
-        var {isLoaded, items} = this.state;
+      }
+      
+      blockHeadCall = () => {
+        var {isLoaded, items, newItems, tempVar} = this.state;
 
-        fetch('https://api.eosnewyork.io/v1/chain/get_info')
+        fetch('https://api.eosnewyork.io/v1/chain/get_info', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+          .then(res => res.json())
+          .then(mainBlock =>{
+            this.setState({
+              isLoaded: true,
+              items: mainBlock,
+            })
+          });
+          let headBlockId = items.head_block_id;
+          this.blockList(headBlockId, newItems);
+    }
+
+    blockList(headBlockId, newItems){
+        let numList = [];
+
+        fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "block_num_or_id" : headBlockId
+            })
+        })
           .then(res => res.json())
           .then(json =>{
             this.setState({
               isLoaded: true,
-              items: json,
+              newItems: json,
             })
           });
-          let headBlock = items.head_block_id;
-          console.log("head block id is: " + headBlock);
-      }
-      
-      blockList = () => {
-        fetch('https://api.eosnewyork.io/v1/chain/get_block', {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':'*',
-                'Access-Control-Allow-Headers':'*'
-            },
-            body: JSON.stringify({
-                "block_num_or_id" : "058d154dee958852b6d8e72cee24ab4ca288d3c738c210fdb111576368028620"
-            })
-          })
-            for (var i = 0; i < 10; i++) {
-                console.log("test data" + i)
-            }
+
+          let previousVal = newItems.previous;
+          let previousObj = JSON.stringify(newItems);
+          console.log("NEW DATA RESULTS *************" + previousObj)
+          console.log("PREVIOUS ID RESULTS *************" + previousVal);
+
+        for (var i = 0; i < 10; i++) {
+            // loop for previous blocks
+        }
     }
       
     reset = () => {
         this.setState({
             on: true
         })
-        this.componentDidMount();
-        this.blockList();
+        this.blockHeadCall();
     }
     render() {
         var {isLoaded, items} = this.state;
@@ -66,7 +89,6 @@ export default class Block extends Component {
                 {this.state.on && (
                     <ol>
                         <li><b>Block id:</b> {items.head_block_id}, <b>Timestamp:</b> {items.head_block_time}, <b>Number of actions:</b> {items.block_cpu_limit}</li>
-
                     </ol>
 
                 )}
