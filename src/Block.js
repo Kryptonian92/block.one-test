@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-
 import EOSJS from 'eosjs';
-
 export default class Block extends Component {
     constructor(props) {
         super(props);
@@ -18,13 +16,10 @@ export default class Block extends Component {
         }
         this.initialState = this.state;
       }
-
       componentDidMount() {
       }
-      
       blockHeadCall = () => {
         var {isLoaded, items, newItems, tempVar} = this.state;
-
         fetch('https://api.eosnewyork.io/v1/chain/get_info', {
             method: 'POST',
             headers: {
@@ -33,52 +28,39 @@ export default class Block extends Component {
             },
         })
           .then(res => res.json())
-          .then(mainBlock =>{
-            this.setState({
-              isLoaded: true,
-              items: mainBlock,
-            })
+          .then(info =>{
+            let headBlockId = info.head_block_id;
+            this.blockList(headBlockId);
           });
-          let headBlockId = items.head_block_id;
-          this.blockList(headBlockId, newItems);
     }
-
-    blockList(headBlockId, newItems){
+    blockList(headBlockId){
         let numList = [];
-
-        for (var i = 0; i < 3; i++) {
-            fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "block_num_or_id" : headBlockId
-                })
+        fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "block_num_or_id" : headBlockId
             })
-              .then(res => res.json())
-              .then(json =>{
-                this.setState({
-                  isLoaded: true,
-                  newItems: json,
-                })
-              });
-              
-              let previousVal = newItems.previous;
-              let previousObj = JSON.stringify(newItems);
-
-              console.log(i + "block previous value: " + previousVal);
-              numList.push(previousVal);
-              this.setState({
-                  head_block_id: previousVal,
-              })
-        }
-        console.log("previous num array" + numList)
+        })
+        .then(res => res.json())
+        .then(json =>{
+          this.addBlock(json);
+        });
     }
-
-    
-      
+    addBlock = (blockData) => {
+      // Add the block to the list of blocks (items)
+      this.setState(prevState => ({
+        on: true,
+        items: [...prevState.items, blockData]
+      }));
+      // Check if you should get another block
+      if (this.state.items.length < 10) {
+        this.blockList(blockData.previous);
+      }
+    }
     reset = () => {
         this.setState({
             on: true
@@ -86,17 +68,16 @@ export default class Block extends Component {
         this.blockHeadCall();
     }
     render() {
-        var {isLoaded, items} = this.state;
-
+        // For each block that is in (items), build a list of "li" and render below
+        const blocks = this.state.items.map((item, key) =>
+            <li><b>Block id:</b> {item.id}, <b>Timestamp:</b> {item.timestamp}, <b>Number of actions:</b> {item.transactions.length}</li>
+        );
         return (
             <div>
                 <button onClick={this.reset}>LOAD</button>
-                {this.state.on && (
-                    <ol>
-                        <li><b>Block id:</b> {items.head_block_id}, <b>Timestamp:</b> {items.head_block_time}, <b>Number of actions:</b> {items.block_cpu_limit}</li>
-                    </ol>
-
-                )}
+                <ol>
+                  { blocks }
+                </ol>
             </div>
         )
     }
