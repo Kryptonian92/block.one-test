@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import EOSJS from 'eosjs';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.css';
+
 
 
 export default class Block extends Component {

@@ -11,7 +11,7 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 function App() {
   
   return (
-    <div className="App">
+    <div className="App jumbotron">
       <Block></Block>
     </div>
   );
