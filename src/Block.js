@@ -46,33 +46,38 @@ export default class Block extends Component {
     blockList(headBlockId, newItems){
         let numList = [];
 
-        fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "block_num_or_id" : headBlockId
+        for (var i = 0; i < 3; i++) {
+            fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "block_num_or_id" : headBlockId
+                })
             })
-        })
-          .then(res => res.json())
-          .then(json =>{
-            this.setState({
-              isLoaded: true,
-              newItems: json,
-            })
-          });
+              .then(res => res.json())
+              .then(json =>{
+                this.setState({
+                  isLoaded: true,
+                  newItems: json,
+                })
+              });
+              
+              let previousVal = newItems.previous;
+              let previousObj = JSON.stringify(newItems);
 
-          let previousVal = newItems.previous;
-          let previousObj = JSON.stringify(newItems);
-          console.log("NEW DATA RESULTS *************" + previousObj)
-          console.log("PREVIOUS ID RESULTS *************" + previousVal);
-
-        for (var i = 0; i < 10; i++) {
-            // loop for previous blocks
+              console.log(i + "block previous value: " + previousVal);
+              numList.push(previousVal);
+              this.setState({
+                  head_block_id: previousVal,
+              })
         }
+        console.log("previous num array" + numList)
     }
+
+    
       
     reset = () => {
         this.setState({
