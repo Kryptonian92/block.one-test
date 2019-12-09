@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
 import EOSJS from 'eosjs';
+import 'bootstrap/dist/css/bootstrap.css';
+import Button from 'react-bootstrap/Button';
+
+
 export default class Block extends Component {
     constructor(props) {
         super(props);
@@ -73,8 +77,8 @@ export default class Block extends Component {
             <li><b>Block id:</b> {item.id}, <b>Timestamp:</b> {item.timestamp}, <b>Number of actions:</b> {item.transactions.length}</li>
         );
         return (
-            <div>
-                <button onClick={this.reset}>LOAD</button>
+            <div class="jumbotron">
+                <button class="button" onClick={this.reset}>LOAD</button>
                 <ol>
                   { blocks }
                 </ol>
