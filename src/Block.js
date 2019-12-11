@@ -39,6 +39,11 @@ export default class Block extends Component {
             this.blockList(headBlockId);
           });
     }
+
+    jestFunction(){
+        let returnVal = "banana";
+        return returnVal;
+    }
     blockList(headBlockId){
         let numList = [];
         fetch('https://cors-anywhere.herokuapp.com/' + 'https://api.eosnewyork.io/v1/chain/get_block', {
