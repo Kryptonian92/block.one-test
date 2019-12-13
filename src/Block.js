@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom';
-import EOSJS from 'eosjs';
+// import ReactDOM from 'react-dom';
+// import EOSJS from 'eosjs';
 import 'bootstrap/dist/css/bootstrap.css';
-import Button from 'react-bootstrap/Button';
+// import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.css';
+// import BlockServiceClass from './Request';
+// import fetchData from './Request'
 
 
 
@@ -25,7 +27,7 @@ export default class Block extends Component {
       componentDidMount() {
       }
       blockHeadCall = () => {
-        var {isLoaded, items, newItems, tempVar} = this.state;
+        // var {isLoaded, items, newItems, tempVar} = this.state;
         fetch('https://api.eosnewyork.io/v1/chain/get_info', {
             method: 'POST',
             headers: {

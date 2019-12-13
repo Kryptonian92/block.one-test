@@ -9,8 +9,10 @@ import {createSerializer} from 'enzyme-to-json';
  
 Enzyme.configure({ adapter: new Adapter() });
 expect.addSnapshotSerializer(createSerializer({mode: 'deep'}));
+const blockClass = require('./Block')
 
 describe('testing block component', () =>{
+    const blockClass = require('./Block')
 
     beforeEach(() => {
         const wrapper = shallow(<Block />);
@@ -64,6 +66,11 @@ describe('testing block component', () =>{
         const mockHeadBlockId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906";
 
         expect(true).toBeTruthy();
+        // wrapper.instance().blockHeadCall()
+        // .then(data => {
+        //   expect(data).toBeDefined()
+        //   expect(data.entity.server_version).toEqual('7c0b0d38')
+        // })
     });
 
     it('blockList', () =>{
